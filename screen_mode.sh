@@ -3,7 +3,7 @@
 MODE="normal"
 BRIGHTNESS=1
 GRAYSCALE=1
-REDSHIFT=4800
+REDSHIFT=5500
 ARGKEY=""
 
 # Regular expression for numbers between 0 and 1 (inclusive)
@@ -23,7 +23,7 @@ Modes:
 Options:
   -b BRIGHTNESS     Brightness value between o and 1 (default: 1)
   -d GRAYSCALE      Grayscale value between 0 and 1 (default: 1)
-  -t REDSHIFT       Redshift value as a number (default: 4800)
+  -t REDSHIFT       Redshift value as a number (default: 5500)
   -h, --help        Show this help message
 
 Examples:
@@ -83,16 +83,21 @@ SHADER=$(cat <<-END
 in vec2 texcoord;
 uniform sampler2D tex;
 float desaturation_factor = $GRAYSCALE; // Adjust for your desired level of desaturation
+float natural_tone_factor = 0.1;
 
 vec4 default_post_processing(vec4 c);
 
 vec4 window_shader() {
     vec2 texsize = textureSize(tex, 0);
     vec4 color = texture2D(tex, texcoord / texsize, 0);
-    float gray = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
 
-    // Mix the color with grayscale based on the desaturation factor
-    color.rgb = mix(color.rgb, vec3(gray), desaturation_factor);
+    float gray = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    vec3 desaturated_color = mix(color.rgb, vec3(gray), -1*desaturation_factor);
+
+    vec3 natural_tone = mix(desaturated_color, vec3(0.95, 0.92, 0.88), natural_tone_factor);
+
+    float final_gray = dot(natural_tone, vec3(0.2126, 0.7152, 0.0722));
+    color.rgb = mix(natural_tone, vec3(final_gray), desaturation_factor);
 
     return default_post_processing(color);
 }
@@ -110,7 +115,8 @@ if [ "$MODE" = "normal" ]; then
     picom --backend glx --config ~/.config/picom/picom.conf  -b # Start Picom with default settings
 else
     # In "reading" mode, adjust Redshift settings to a softer tone
-    redshift -O "$REDSHIFT" -g 0.85:0.85:0.80 -b "$BRIGHTNESS"
+    # redshift -O "$REDSHIFT" -g 0.85:0.85:0.80 -b "$BRIGHTNESS"
+    redshift -O "$REDSHIFT" -b 1  # Ensure the default Redshift settings are applied
     picom --backend glx --config ~/.config/picom/picom.conf --window-shader-fg /tmp/shader.glsl -b
 fi
 

@@ -22,14 +22,14 @@ Reading mode applies a softer, paper-like display effect with adjustable desatur
 
 - Partial desaturation (OnePlus Chromatic-like effect):
 	```sh
-    ./screen_mode.sh reading -d 0.6
+    ./screen_mode.sh reading -d 0.8
 	```
 	*A balance between color and grayscale, reducing eye strain while keeping some color visibility.*
 
 - Partial desaturation with temperature setting:
 	```sh
     ./screen_mode.sh reading -d 0.6 -t 4500
-    ./screen_mode.sh reading -d 0.3 -t 4500
+    ./screen_mode.sh reading -d 0.7 -t 4500
 	```
 	*A balance between color and grayscale, reducing eye strain while keeping some color visibility.*
 
