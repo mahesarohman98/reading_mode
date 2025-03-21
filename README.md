@@ -13,7 +13,7 @@ Ensure you have the following installed before using the script:
 ### Normal Mode
 - Runs the screen in its default state.
 	```sh
-	    ./screen_mode.sh normal
+	    ./screen_mode.sh normal -b 0.9
 	```
 
 ### Reading Mode 
@@ -22,13 +22,20 @@ Reading mode applies a softer, paper-like display effect with adjustable desatur
 
 - Partial desaturation (OnePlus Chromatic-like effect):
 	```sh
-    ./screen_mode.sh reading 0.6
+    ./screen_mode.sh reading -d 0.6
+	```
+	*A balance between color and grayscale, reducing eye strain while keeping some color visibility.*
+
+- Partial desaturation with temperature setting:
+	```sh
+    ./screen_mode.sh reading -d 0.6 -t 4500
+    ./screen_mode.sh reading -d 0.3 -t 4500
 	```
 	*A balance between color and grayscale, reducing eye strain while keeping some color visibility.*
 
 - Full desaturation (Monochrome/Black & White):
 	```sh
-    ./screen_mode.sh reading 1
+    ./screen_mode.sh reading -d 1
 	```
 	*Completely removes color, creating a black-and-white display for maximum focus and reduced distractions.*
 
